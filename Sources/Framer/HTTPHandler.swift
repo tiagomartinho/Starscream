@@ -54,13 +54,16 @@ public struct HTTPWSHeader {
         }
         
         var req = request
-        if request.value(forHTTPHeaderField: HTTPWSHeader.originName) == nil {
+        let originHeader = request.value(forHTTPHeaderField: HTTPWSHeader.originName)
+        if originHeader == nil {
             var origin = url.absoluteString
             if let hostUrl = URL (string: "/", relativeTo: url) {
                 origin = hostUrl.absoluteString
                 origin.remove(at: origin.index(before: origin.endIndex))
             }
             req.setValue(origin, forHTTPHeaderField: HTTPWSHeader.originName)
+        } else if originHeader == "" {
+            req.setValue(nil, forHTTPHeaderField: HTTPWSHeader.originName)
         }
         req.setValue(HTTPWSHeader.upgradeValue, forHTTPHeaderField: HTTPWSHeader.upgradeName)
         req.setValue(HTTPWSHeader.connectionValue, forHTTPHeaderField: HTTPWSHeader.connectionName)
